@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import DeleteIcon from '../icons/Delete.astro';
+import { deleteProduct } from '../lib/api';
 
 function DeleteButton({ id }: { id: string }) {
   const dialog = useRef<HTMLDialogElement>(null);
@@ -25,7 +26,9 @@ function DeleteButton({ id }: { id: string }) {
           >
             Cancelar
           </button>
-          <button>Comfirmar</button>
+          <button onClick={async () => deleteProduct(id)}>
+            <DeleteIcon /> Comfirmar
+          </button>
         </div>
       </dialog>
       <button

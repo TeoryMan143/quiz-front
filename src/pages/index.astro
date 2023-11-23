@@ -1,14 +1,11 @@
 ---
-import ProductCard from '../components/ProductCard.astro';
+import IndexProducts from '../components/index-products';
 import Layout from '../layouts/Layout.astro';
-import { getAllProducts } from '../lib/api';
-
-const products = await getAllProducts();
 ---
 
-<Layout title='Welcome to Astro.'>
-  <main class='p-6 flex flex-wrap gap-5'>
-    {products.map(product => <ProductCard product={product} />)}
+<Layout title='Productos'>
+  <main>
+    <IndexProducts client:load />
   </main>
 </Layout>
 

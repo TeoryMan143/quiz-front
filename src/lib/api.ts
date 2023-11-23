@@ -1,4 +1,4 @@
-import type { Product } from '../types';
+import type { AddProductDTO, Product } from '../types';
 
 const BASE_URL = 'https://quiz-back-dev-exqn.4.us-1.fl0.io';
 
@@ -11,6 +11,18 @@ export const getAllProducts = async () => {
     return finalProduct;
   });
   return allProducts;
+};
+
+export const addProduct = async (product: AddProductDTO) => {
+  const addedProductRes = await fetch(`${BASE_URL}/product`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(product),
+  });
+  const addedProduct = addedProductRes.json();
+  return addedProduct;
 };
 
 export const deleteProduct = async (id: string) => {

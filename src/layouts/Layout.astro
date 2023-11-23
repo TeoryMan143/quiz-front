@@ -3,6 +3,8 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import '@fontsource/lilita-one';
+import House from '../icons/House';
+import { ViewTransitions } from 'astro:transitions';
 
 interface Props {
   title: string;
@@ -20,10 +22,19 @@ const { title } = Astro.props;
     <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
     <meta name='generator' content={Astro.generator} />
     <title>{title}</title>
+    <ViewTransitions />
   </head>
   <body>
     <div id='app'>
-      <header class='py-8'>
+      <header class='py-8 relative'>
+        <a
+          href='/'
+          class='flex absolute items-center left-5 text-xl top-10 hover:text-cyan-500 transition-colors'
+        >
+          <House className='inline-block relative bottom-[2px] mr-2' />
+          <span>Inicio</span>
+        </a>
+
         <h1 class='font-lilita text-5xl text-center'>
           Administrador de productos
         </h1>
@@ -31,21 +42,20 @@ const { title } = Astro.props;
 
       <slot />
     </div>
-  </body>
-</html>
-<style>
-  html {
-    background-color: #121225;
-    color: #fff;
-    font-family: 'Roboto', sans-serif;
-  }
+  </body><style>
+    html {
+      background-color: #121225;
+      color: #fff;
+      font-family: 'Roboto', sans-serif;
+    }
 
-  #app {
-    display: grid;
-    grid-template-areas:
-      'header'
-      'main';
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
-  }
-</style>
+    #app {
+      display: grid;
+      grid-template-areas:
+        'header'
+        'main';
+      grid-template-columns: 1fr;
+      grid-template-rows: auto 1fr;
+    }
+  </style>
+</html>

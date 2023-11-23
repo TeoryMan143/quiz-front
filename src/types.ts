@@ -8,3 +8,11 @@ export interface Product {
   total_price: number;
   date: Date;
 }
+
+export interface AddProductDTO {
+  image_url: string;
+  name: string;
+  description: string;
+  amount: number;
+  price: number;
+}

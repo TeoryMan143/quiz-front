@@ -1,0 +1,87 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getProduct } from '../../lib/api';
+import type { UUID } from '../../types';
+import AmountIcon from '../../icons/Amount';
+import PriceTagIcon from '../../icons/PriceTag';
+import DollarIcon from '../../icons/Dollar';
+import EditIcon from '../../icons/Edit';
+import DeleteButton from '../../components/delete-button';
+
+const { id } = Astro.params as { id: UUID };
+
+if (!id) return;
+
+const {
+  name,
+  image_url: imageUrl,
+  date,
+  description,
+  amount,
+  price,
+  total_price: totalPrice,
+} = await getProduct(id);
+---
+
+<Layout title='--temp Name'>
+  <div class='flex justify-center mt-5'>
+    <section class='max-w-5xl flex flex-col gap-4'>
+      <div class='flex justify-between'>
+        <div class='grow-[3]'>
+          <h2 class='font-lilita text-5xl'>{name}</h2>
+          <p class='pt-1 text-gray-300'>
+            Añadido: {
+              date.toLocaleString('es-CO', {
+                month: 'long',
+                day: '2-digit',
+                year: 'numeric',
+              })
+            }
+          </p>
+        </div>
+        <div class='flex flex-col gap-1 grow-[2]'>
+          <a
+            href={`edit-product/${id}`}
+            class='border border-white rounded-xl p-2 hover:bg-slate-800 hover:shadow-xl transition hover:scale-105 text-center'
+          >
+            <EditIcon className='inline-block relative bottom-[2px]' />
+          </a>
+          <DeleteButton id={id} noText client:load />
+        </div>
+      </div>
+      <img
+        src={imageUrl}
+        alt=`${name} image`
+        width='330'
+        height='330'
+        class='aspect-square object-cover'
+      />
+      <p class='text-center'>{description}</p>
+      <div
+        class='flex gap-5 p-3 justify-center [&_span]:text-lg [&_svg]:text-4xl'
+      >
+        <div class='flex flex-col items-center min-w-[48px]'>
+          <span class='text-sm text-center'>Cantidad</span>
+          <AmountIcon className='text-2xl text-red-600' />
+          <span>{amount}</span>
+        </div>
+        <div class='py-2'>
+          <div class='h-full w-[1px] bg-white'></div>
+        </div>
+        <div class='flex flex-col items-center min-w-[48px]'>
+          <span class='text-sm text-center'>Precio</span>
+          <PriceTagIcon className='text-2xl text-amber-500' />
+          <span>{price}</span>
+        </div>
+        <div class='py-2'>
+          <div class='h-full w-[1px] bg-white'></div>
+        </div>
+        <div class='flex flex-col items-center min-w-[48px]'>
+          <span class='text-sm text-center'>Total</span>
+          <DollarIcon className='text-2xl text-green-500' />
+          <span>{totalPrice}</span>
+        </div>
+      </div>
+    </section>
+  </div>
+</Layout>

@@ -13,3 +13,7 @@ export function checkImageUrl(url: string) {
     image.src = url;
   });
 }
+
+export function delay(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}

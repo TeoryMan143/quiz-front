@@ -1,5 +1,7 @@
+export type UUID = `${string}-${string}-${string}-${string}-${string}`;
+
 export interface Product {
-  id: `${string}-${string}-${string}-${string}-${string}`;
+  id: UUID;
   image_url: string;
   name: string;
   description: string;

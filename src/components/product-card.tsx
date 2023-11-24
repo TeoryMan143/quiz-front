@@ -25,7 +25,7 @@ function ProductCard({ product }: Props) {
   return (
     <section className='bg-slate-700 flex flex-col gap-3 p-5 rounded-md max-w-xs items-center text-ellipsis relative group/all'>
       <h3 className='font-medium text-2xl font-lilita'>{name}</h3>
-      <div className='relative overflow-hidden rounded-md '>
+      <div className='relative overflow-hidden rounded-md'>
         <img
           src={imageUrl}
           alt='A bird'

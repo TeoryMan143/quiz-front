@@ -1,4 +1,4 @@
-import type { AddProductDTO, Product } from '../types';
+import type { AddProductDTO, Product, UUID } from '../types';
 
 const BASE_URL = 'https://quiz-back-dev-exqn.4.us-1.fl0.io';
 
@@ -11,6 +11,14 @@ export const getAllProducts = async () => {
     return finalProduct;
   });
   return allProducts;
+};
+
+export const getProduct = async (id: UUID): Promise<Product> => {
+  const res = await fetch(`${BASE_URL}/product/${id}`);
+  const [queryProduct] = await res.json();
+  const date = new Date(queryProduct.date);
+  const finalProduct = { ...queryProduct, date };
+  return finalProduct;
 };
 
 export const addProduct = async (product: AddProductDTO) => {

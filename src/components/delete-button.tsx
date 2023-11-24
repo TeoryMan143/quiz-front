@@ -31,7 +31,13 @@ const CancelIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-function DeleteButton({ id }: { id: string }) {
+function DeleteButton({
+  id,
+  noText = false,
+}: {
+  id: string;
+  noText?: boolean;
+}) {
   const dialog = useRef<HTMLDialogElement>(null);
 
   const handleClick = () => {
@@ -57,7 +63,10 @@ function DeleteButton({ id }: { id: string }) {
             Cancelar
           </button>
           <button
-            onClick={async () => await deleteProduct(id)}
+            onClick={async () => {
+              await deleteProduct(id);
+              window.location.href = '/';
+            }}
             className='border border-white rounded-xl p-2 bg-red-700 transition hover:scale-105 hover:bg-red-900 focus:shadow-xl focus:scale-105 focus:bg-red-900 hover:shadow-xl'
           >
             <DeleteIcon className='inline-block relative bottom-[2px]' />{' '}
@@ -70,7 +79,7 @@ function DeleteButton({ id }: { id: string }) {
         onClick={handleClick}
       >
         <DeleteIcon className='inline-block relative bottom-[2px]' />
-        Eliminar
+        {noText ? '' : 'Eliminar'}
       </button>
     </>
   );

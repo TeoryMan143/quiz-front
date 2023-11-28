@@ -9,6 +9,7 @@ export interface Product {
   price: number;
   total_price: number;
   date: Date;
+  [index: string]: any;
 }
 
 export interface AddProductDTO {
@@ -17,4 +18,12 @@ export interface AddProductDTO {
   description: string;
   amount: number;
   price: number;
+}
+
+export interface EditProductDTO {
+  image_url?: string;
+  name?: string;
+  description?: string;
+  amount?: number;
+  price?: number;
 }

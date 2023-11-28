@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react';
-import type { Product } from '../../../types';
-import { deleteProduct, getAllProducts, addProduct } from '../../../lib/api';
+import type { Product } from '../types';
+import {
+  deleteProduct,
+  getAllProducts,
+  addProduct,
+  getProduct,
+  editProduct,
+} from '../lib/api';
 
 const useProducts = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -13,7 +19,7 @@ const useProducts = () => {
     getProducts().catch(err => console.error(err));
   }, [products]);
 
-  return { products, deleteProduct, addProduct };
+  return { products, deleteProduct, addProduct, getProduct, editProduct };
 };
 
 export default useProducts;

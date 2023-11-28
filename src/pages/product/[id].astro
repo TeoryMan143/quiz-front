@@ -1,7 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { getProduct } from '../../lib/api';
-import type { UUID } from '../../types';
+import type { Product, UUID } from '../../types';
 import AmountIcon from '../../icons/Amount';
 import PriceTagIcon from '../../icons/PriceTag';
 import DollarIcon from '../../icons/Dollar';
@@ -12,18 +12,24 @@ const { id } = Astro.params as { id: UUID };
 
 if (!id) return;
 
+const res = await getProduct(id);
+
+if (res.error) {
+  return Astro.redirect('/404');
+}
+
 const {
-  name,
-  image_url: imageUrl,
+  amount,
   date,
   description,
-  amount,
+  image_url: imageUrl,
+  name,
   price,
   total_price: totalPrice,
-} = await getProduct(id);
+} = res as Product;
 ---
 
-<Layout title='--temp Name'>
+<Layout title={name}>
   <div class='flex justify-center mt-5'>
     <section class='max-w-5xl flex flex-col gap-4'>
       <div class='flex justify-between'>
@@ -41,7 +47,7 @@ const {
         </div>
         <div class='flex flex-col gap-1 grow-[2]'>
           <a
-            href={`edit-product/${id}`}
+            href={`../edit-product/${id}`}
             class='border border-white rounded-xl p-2 hover:bg-slate-800 hover:shadow-xl transition hover:scale-105 text-center'
           >
             <EditIcon className='inline-block relative bottom-[2px]' />

@@ -1,5 +1,5 @@
 import ProductCard from '../product-card';
-import useProducts from './hooks/useProducts';
+import useProducts from '../../hooks/useProducts';
 
 function IndexProducts() {
   const { products } = useProducts();

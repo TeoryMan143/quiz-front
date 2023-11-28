@@ -1,0 +1,19 @@
+---
+import Layout from '../layouts/Layout.astro';
+import image from '../../img/404.webp';
+---
+
+<Layout title='404'>
+  <div class='flex flex-col justify-center items-center gap-4'>
+    <img
+      src={image.src}
+      alt='How Did We Get Here?'
+      height='400px'
+      width='400px'
+    />
+    <div>
+      <h2 class='text-center text-6xl'>404</h2>
+      <p class='text-center text-2xl'>Not found</p>
+    </div>
+  </div>
+</Layout>

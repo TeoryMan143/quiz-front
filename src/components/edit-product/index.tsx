@@ -1,28 +1,41 @@
 import * as Form from '@radix-ui/react-form';
 import PriceTagIcon from '../../icons/PriceTag';
 import AmountIcon from '../../icons/Amount';
-import { useRef, type FormEventHandler, useState } from 'react';
-import { checkImageUrl, delay } from '../../lib/utils';
+import { useRef, type FormEventHandler, useState, useEffect } from 'react';
+import { checkImageUrl } from '../../lib/utils';
 import useProducts from '../../hooks/useProducts';
 import styles from './styles.module.css';
+import type { Product, UUID } from '../../types';
+import { editProduct } from '../../lib/api';
 
-function NewProduct() {
+function NewProduct({ id }: { id: UUID }) {
   const [loading, setLoading] = useState(false);
+  const [loadingInit, setLoadingInit] = useState(true);
   const [done, setDone] = useState(false);
+  const [initProduct, setInitProduct] = useState<Product | null>(null);
 
-  const formRef = useRef<HTMLFormElement>(null);
+  const { getProduct } = useProducts();
 
-  const { addProduct } = useProducts();
+  useEffect(() => {
+    const run = async () => {
+      const res = await getProduct(id);
+
+      if (res.error) {
+        return (window.location.href = '/404');
+      }
+
+      setInitProduct(res as Product);
+      setLoadingInit(false);
+    };
+
+    run();
+  }, []);
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
     setLoading(true);
 
-    if (!formRef.current) {
-      return;
-    }
-
-    const formData = new FormData(formRef.current);
+    const formData = new FormData(e.currentTarget);
 
     const name = formData.get('name');
     const description = formData.get('description');
@@ -30,17 +43,26 @@ function NewProduct() {
     const price = formData.get('price');
     const imageUrl = formData.get('image');
 
-    if (!name || !description || !amount || !price || !imageUrl) {
-      return;
+    const formObj = {
+      name: name?.toString(),
+      description: description?.toString(),
+      amount:
+        amount?.toString() == null ? null : parseFloat(amount?.toString()),
+      price: price?.toString() == null ? null : parseFloat(price?.toString()),
+      image_url: imageUrl?.toString(),
+    } as any;
+
+    let finalProduct = {} as any;
+
+    for (const [key, value] of Object.entries(formObj as Object)) {
+      if (!initProduct) return;
+
+      if (initProduct[key] !== value) {
+        finalProduct[key] = formObj[key] || null;
+      }
     }
 
-    addProduct({
-      name: name.toString(),
-      description: description.toString(),
-      amount: parseFloat(amount.toString()),
-      price: parseFloat(price.toString()),
-      image_url: imageUrl.toString(),
-    });
+    editProduct(id, finalProduct);
 
     setLoading(false);
     setDone(true);
@@ -50,10 +72,59 @@ function NewProduct() {
     <div className='flex justify-center items-center mt-16 '>
       <Form.Root
         className='rounded-md p-5 border-2 border-white w-[370PX] bg-blue-950'
-        ref={formRef}
         onSubmit={handleSubmit}
       >
-        {done ? (
+        {loadingInit ? (
+          <div className='grid place-content-center'>
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              width='1em'
+              height='1em'
+              viewBox='0 0 24 24'
+              className='text-6xl'
+            >
+              <g
+                fill='none'
+                stroke='currentColor'
+                strokeLinecap='round'
+                strokeWidth='2'
+              >
+                <path
+                  strokeDasharray='60'
+                  strokeDashoffset='60'
+                  strokeOpacity='.3'
+                  d='M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z'
+                >
+                  <animate
+                    fill='freeze'
+                    attributeName='stroke-dashoffset'
+                    dur='1.3s'
+                    values='60;0'
+                  />
+                </path>
+                <path
+                  strokeDasharray='15'
+                  strokeDashoffset='15'
+                  d='M12 3C16.9706 3 21 7.02944 21 12'
+                >
+                  <animate
+                    fill='freeze'
+                    attributeName='stroke-dashoffset'
+                    dur='0.3s'
+                    values='15;0'
+                  />
+                  <animateTransform
+                    attributeName='transform'
+                    dur='1.5s'
+                    repeatCount='indefinite'
+                    type='rotate'
+                    values='0 12 12;360 12 12'
+                  />
+                </path>
+              </g>
+            </svg>
+          </div>
+        ) : done ? (
           <div className='flex flex-col justify-center items-center'>
             <svg
               width='1em'
@@ -102,6 +173,7 @@ function NewProduct() {
                   <input
                     className='box-border w-full bg-blue-900 shadow-white inline-flex h-[35px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none text-white shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_white] focus:shadow-[0_0_0_2px_white] selection:color-white selection:bg-white'
                     required
+                    defaultValue={initProduct?.name}
                   />
                 </Form.Control>
               </Form.Field>
@@ -121,6 +193,7 @@ function NewProduct() {
                   <textarea
                     className='box-border w-full bg-blue-900 shadow-white inline-flex appearance-none items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none text-white shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_white] focus:shadow-[0_0_0_2px_white] selection:color-white selection:bg-white h-14'
                     required
+                    defaultValue={initProduct?.description}
                   />
                 </Form.Control>
               </Form.Field>
@@ -146,6 +219,7 @@ function NewProduct() {
                   <input
                     className='box-border w-full bg-blue-900 shadow-white inline-flex h-[35px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none text-white shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_white] focus:shadow-[0_0_0_2px_white] selection:color-white selection:bg-white'
                     required
+                    defaultValue={initProduct?.image_url}
                   />
                 </Form.Control>
               </Form.Field>
@@ -167,6 +241,7 @@ function NewProduct() {
                       className='box-border  bg-blue-900 shadow-white inline-flex h-[35px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none text-white shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_white] focus:shadow-[0_0_0_2px_white] selection:color-white selection:bg-white'
                       type='number'
                       required
+                      defaultValue={initProduct?.price}
                     />
                   </Form.Control>
                 </Form.Field>
@@ -187,6 +262,7 @@ function NewProduct() {
                       className='box-border bg-blue-900 shadow-white inline-flex h-[35px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none text-white shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_white] focus:shadow-[0_0_0_2px_white] selection:color-white selection:bg-white w-20'
                       type='number'
                       required
+                      defaultValue={initProduct?.amount}
                     />
                   </Form.Control>
                 </Form.Field>

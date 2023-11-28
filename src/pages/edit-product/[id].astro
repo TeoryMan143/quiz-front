@@ -1,0 +1,11 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import EditProduct from '../../components/edit-product';
+import type { UUID } from '../../types';
+
+const {id} = Astro.params as {id:UUID}
+---
+
+<Layout title='Añadir Producto'>
+  <EditProduct id={id} client:load />
+</Layout>
